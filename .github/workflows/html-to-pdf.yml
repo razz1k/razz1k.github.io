@@ -2,7 +2,7 @@ name: HTML to PDF
 
 on:
   push:
-    branches: [master, main]
+    branches: [main]
     paths:
       - 'index.html'
       - 'index-ru.html'
@@ -37,6 +37,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No PDF changes"
           else
-            git commit -m "chore: update CV PDF [skip ci]"
+            git commit -m "chore: update CV PDF"
             git push
           fi
