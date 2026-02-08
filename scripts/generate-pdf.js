@@ -3,7 +3,10 @@ const path = require('path');
 const http = require('http');
 
 const PORT = 37542;
-const OUTPUT_PATH = path.join(__dirname, '..', 'files', 'cv_igor_razumny.pdf');
+const OUTPUTS = [
+  { urlPath: '/', path: path.join(__dirname, '..', 'files', 'cv_igor_razumny.pdf') },
+  { urlPath: '/index-ru.html', path: path.join(__dirname, '..', 'files', 'cv_igor_razumny_ru.pdf') },
+];
 
 function waitForServer(port, maxAttempts = 30) {
   return new Promise((resolve, reject) => {
@@ -37,13 +40,13 @@ async function main() {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
-    await page.goto(`http://127.0.0.1:${PORT}/`, { waitUntil: 'networkidle0' });
-    await page.pdf({
-      path: OUTPUT_PATH,
-      format: 'A4',
-      printBackground: true,
-      margin: { top: '10mm', right: '10mm', bottom: '10mm', left: '10mm' },
-    });
+    const pdfOptions = {
+      printBackground: true
+    };
+    for (const { urlPath, path: outPath } of OUTPUTS) {
+      await page.goto(`http://127.0.0.1:${PORT}${urlPath}`, { waitUntil: 'networkidle0' });
+      await page.pdf({ ...pdfOptions, path: outPath });
+    }
     await browser.close();
   } finally {
     server.kill();
