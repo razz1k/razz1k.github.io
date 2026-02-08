@@ -1,0 +1,5 @@
+.DS_Store
+.idea
+.cursor
+.vscode
+node_modules
